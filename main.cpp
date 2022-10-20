@@ -15,6 +15,7 @@
 #include <GL/glut.h>   /* Pour les autres systemes */
 #endif 
 #include <cstdlib>
+#include <math.h>
 
 /*class Point*/
 class Point{
@@ -28,6 +29,7 @@ class Point{
 char presse;
 int anglex,angley,x,y,xold,yold;
 double zoom=3;
+float rayon=2;
 
 /* Prototype des fonctions */
 void affichage();
@@ -36,6 +38,7 @@ void reshape(int x,int y);
 void idle();
 void mouse(int bouton,int etat,int x,int y);
 void mousemotion(int x,int y);
+void drawMaDemiSphere(float r, int NM, int NP);
 
 int main(int argc,char **argv)
 {
@@ -80,36 +83,119 @@ void affichage()
   glRotatef(180,0,0,1);
   glOrtho(zoom,-zoom,zoom,-zoom,zoom,-zoom);
   
+  /*//Nageoire
   glPushMatrix();
     glScaled(1,0.25,2);
     glColor3f(1,1,1);
     glutSolidSphere(0.8,10,10);
-	glPopMatrix();
+	glPopMatrix();*/
   
-    //Repère
-    //axe x en rouge
-    glBegin(GL_LINES);
-        glColor3f(1.0,0.0,0.0);
-    	glVertex3f(0, 0,0.0);
-    	glVertex3f(1, 0,0.0);
-    glEnd();
-    //axe des y en vert
-    glBegin(GL_LINES);
-    	glColor3f(0.0,1.0,0.0);
-    	glVertex3f(0, 0,0.0);
-    	glVertex3f(0, 1,0.0);
-    glEnd();
-    //axe des z en bleu
-    glBegin(GL_LINES);
-    	glColor3f(0.0,0.0,1.0);
-    	glVertex3f(0, 0,0.0);
-    	glVertex3f(0, 0,1.0);
-    glEnd();
 
+  //Corps
+  
+  glPushMatrix();
+    glColor3f(139.0/255,69.0/255,19.0/255);
+    glScaled(0.8,0.8,1);
+    drawMaDemiSphere(rayon,16,6);
+  glPopMatrix();
+
+  glPushMatrix();
+    glColor3f(1,1,0);
+    glTranslated(0,-0.1,0);
+    glRotated(180,0,0,1);
+    glScaled(0.9,0.9,0.9);
+    glScaled(0.8,0.5,1);
+    drawMaDemiSphere(rayon,20,6);
+  glPopMatrix();
+  
+  //Couronne
+  float angle=0;
+  glColor3f(0,1,0);
+  glScaled(0.8,0.5,1);
+  while(angle<360)
+  {  
+    glPushMatrix();
+      glRotated(angle,0,1,0);
+      glTranslated(0,0,rayon+0.01);
+      glRotated(-10,1,0,0);
+      glScaled(1,1,0.2);
+      glScaled(0.2,0.3,0.2);
+      glutSolidCube(1);
+      glRotated(90,1,0,0);
+      glutSolidCube(1);
+    glPopMatrix();
+
+    glPushMatrix();
+      glRotated(angle,0,1,0);
+      glTranslated(0,0,rayon+0.01);
+      glTranslated(0,-0.15,-0.09);
+      glRotated(-90,1,0,0);
+      glRotated(-10,1,0,0);
+      glScaled(1,1,0.2);
+      glScaled(0.2,0.2,0.2);
+      glutSolidCube(1);
+      glRotated(90,1,0,0);
+      glutSolidCube(1);
+    glPopMatrix();
+
+    angle+=5;
+  }
+
+/*
+  //Repère
+  //axe x en rouge
+  glBegin(GL_LINES);
+      glColor3f(1.0,0.0,0.0);
+    glVertex3f(0, 0,0.0);
+    glVertex3f(1, 0,0.0);
+  glEnd();
+  //axe des y en vert
+  glBegin(GL_LINES);
+    glColor3f(0.0,1.0,0.0);
+    glVertex3f(0, 0,0.0);
+    glVertex3f(0, 1,0.0);
+  glEnd();
+  //axe des z en bleu
+  glBegin(GL_LINES);
+    glColor3f(0.0,0.0,1.0);
+    glVertex3f(0, 0,0.0);
+    glVertex3f(0, 0,1.0);
+  glEnd();
+*/
   glFlush();
   
   //On echange les buffers 
   glutSwapBuffers();
+}
+
+
+void drawMaDemiSphere(float r, int NM, int NP)
+{
+  int i,j;
+  GLfloat fSphere[NM*NP][3];
+
+  for (i=0;i<NP;i++)
+  {
+    for (j=0;j<NM;j++)
+    {
+      fSphere[i*NM+j][0]=r*cos(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
+      fSphere[i*NM+j][1]=r*sin(i*M_PI/(2*NP));
+      fSphere[i*NM+j][2]=r*sin(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
+    }
+  }
+
+  glBegin(GL_POLYGON);
+    for (i=0; i<NP-1; ++i) {
+      for (j=0; j<NM; ++j) {
+        glVertex3fv(fSphere[i*NM+j]);
+        glVertex3fv(fSphere[i*NM+(j+1)%NM]);
+        glVertex3fv(fSphere[(i+1)*NM+(j+1)%NM]);
+        glVertex3fv(fSphere[(i+1)*NM+j]);
+      }
+    }
+  glEnd();
+
+
 }
 
 void clavier(unsigned char touche,int x,int y)
@@ -144,9 +230,11 @@ void clavier(unsigned char touche,int x,int y)
     case 'z':
       zoom*=1.1;
       glutPostRedisplay();
+      break;
     case 'Z':
       zoom/=1.1;
       glutPostRedisplay();
+      break;
     case 'q' : /*la touche 'q' permet de quitter le programme */
       exit(0);
     }
