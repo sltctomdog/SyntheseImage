@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <math.h>
 #include "carapace.cpp"
+#include "nageoire.cpp"
 
 char presse;
 int anglex,angley,x,y,xold,yold;
@@ -74,19 +75,30 @@ void affichage()
   glOrtho(zoom,-zoom,zoom,-zoom,zoom,-zoom);
   
   drawCarapace();
-  /*//Nageoire
+
   glPushMatrix();
-    glScaled(1,0.25,2);
-    glColor3f(1,1,1);
-    glutSolidSphere(0.8,10,10);
-	glPopMatrix();*/
+    glTranslated(-2,-0.5,1.2);
+    glScaled(0.4,0.4,0.4); 
+    drawNageoireAvGauche(); 
+  glPopMatrix();
+
+  glPushMatrix();
+    glTranslated(2,-0.5,1.2);
+    glScaled(0.4,0.4,0.4); 
+    drawNageoireAvDroite(); 
+  glPopMatrix();
+
+
+
+
+
     
 
-/*
+
   //Repère
   //axe x en rouge
   glBegin(GL_LINES);
-      glColor3f(1.0,0.0,0.0);
+    glColor3f(1.0,0.0,0.0);
     glVertex3f(0, 0,0.0);
     glVertex3f(1, 0,0.0);
   glEnd();
@@ -102,7 +114,7 @@ void affichage()
     glVertex3f(0, 0,0.0);
     glVertex3f(0, 0,1.0);
   glEnd();
-*/
+
   glFlush();
   
   //On echange les buffers 

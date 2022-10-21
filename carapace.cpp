@@ -38,7 +38,7 @@ void drawCarapace()
 {
 	glPushMatrix();
 		glColor3f(139.0/255,69.0/255,19.0/255);
-		glScaled(0.8,0.8,1);
+		glScaled(0.8,0.6,1);
 		drawMaDemiSphere(rayon,16,6);
   	glPopMatrix();
 
@@ -85,7 +85,7 @@ void drawMaDemiSphere(float r, int NM, int NP)
 void drawCouronne()
 {
 	float angle=0;
-	glColor3f(0,1,0);
+	glColor3f(64./255,64./255,34./255);
 	glScaled(0.8,0.5,1);
 	while(angle<360)
 	{  
