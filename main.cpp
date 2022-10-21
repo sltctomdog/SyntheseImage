@@ -18,10 +18,11 @@
 #include <math.h>
 #include "carapace.cpp"
 #include "nageoire.cpp"
+#include "tete.cpp"
 
 char presse;
 int anglex,angley,x,y,xold,yold;
-double zoom=3;
+double zoom=5;
 
 /* Prototype des fonctions */
 void affichage();
@@ -74,25 +75,39 @@ void affichage()
   glRotatef(180,0,0,1);
   glOrtho(zoom,-zoom,zoom,-zoom,zoom,-zoom);
   
-  drawCarapace();
-
   glPushMatrix();
-    glTranslated(-2,-0.5,1.2);
-    glScaled(0.4,0.4,0.4); 
-    drawNageoireAvGauche(); 
-  glPopMatrix();
+    glRotated(180-45,0,1,0);
+    drawCarapace();
 
-  glPushMatrix();
-    glTranslated(2,-0.5,1.2);
-    glScaled(0.4,0.4,0.4); 
-    drawNageoireAvDroite(); 
-  glPopMatrix();
+    glPushMatrix();
+      glTranslated(-1.65,-0.5,1.2);
+      glScaled(0.4,0.4,0.4); 
+      drawNageoireAvGauche(); 
+    glPopMatrix();
+
+    glPushMatrix();
+      glTranslated(1.65,-0.5,1.2);
+      glScaled(0.4,0.4,0.4); 
+      drawNageoireAvDroite(); 
+    glPopMatrix();
 
 
+    glPushMatrix();
+      glTranslated(-1.35,-1,-1.5);
+      glScaled(0.3,0.3,0.3);
+      drawNageoireArGauche();
+    glPopMatrix();
 
+    glPushMatrix();
+      glTranslated(1.35,-1,-1.5);
+      glScaled(0.3,0.3,0.3);
+      drawNageoireArDroite();
+    glPopMatrix();
 
-
-    
+    glPushMatrix();
+      drawTete();
+    glPopMatrix();
+  glPopMatrix();    
 
 
   //Repère

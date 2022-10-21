@@ -67,10 +67,43 @@ void drawNageoireAvDroite()
 
 void drawNageoireArGauche()
 {
+    glColor3f(79./255,97./255,55./255);
+    glPushMatrix();
+        glRotated(-60,1,0,0);
+        glRotated(-145,0,1,0);
+        glRotated(-240,0,0,1);
+        glPushMatrix();
+            glScaled(0.7,0.25,2.5);
+            glutSolidSphere(1,10,10);
+        glPopMatrix();
 
+        glPushMatrix();
+            glTranslated(1.6,0,4.2);
+            glRotated(30,0,1,0);
+            glScaled(1,0.4,3);
+            glutSolidSphere(1,10,10);
+        glPopMatrix();
+    glPopMatrix();
 }
 
 void drawNageoireArDroite()
 {
+    glColor3f(79./255,97./255,55./255);
+    glPushMatrix();
+        glRotated(-60,1,0,0);
+        glRotated(145,0,1,0);
+        glRotated(240,0,0,1);
+        glPushMatrix();
+            glScaled(0.7,0.25,2.5);
+            glutSolidSphere(1,10,10);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslated(-1.6,0,4.2);
+            glRotated(-30,0,1,0);
+            glScaled(1,0.4,3);
+            glutSolidSphere(1,10,10);
+        glPopMatrix();
+    glPopMatrix();
 
 }
