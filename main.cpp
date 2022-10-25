@@ -21,6 +21,7 @@
 char presse;
 int anglex,angley,x,y,xold,yold;
 double zoom=5;
+double vitesseCamera = 4;
 float valueAnimationNageoire=0;
 int animNageoire=0;
 float valueAnimationBouche=20;
@@ -195,6 +196,22 @@ void clavier(unsigned char touche,int x,int y)
       zoom/=1.1;
       glutPostRedisplay();
       break;
+     case 'l':
+        angley+= vitesseCamera;
+        glutPostRedisplay(); /* on demande un rafraichissement de l'affichage */
+        break;
+    case 'm':
+        anglex += vitesseCamera;
+        glutPostRedisplay();
+       break;
+    case 'k':
+        anglex -= vitesseCamera ;
+        glutPostRedisplay();
+        break;
+    case 'o':
+        angley -= vitesseCamera;
+        glutPostRedisplay();
+        break;
     case 'q' : /*la touche 'q' permet de quitter le programme */
       exit(0);
     }
