@@ -8,14 +8,12 @@
 //gcc main.cpp -lglut -lGL -lm -o main.o && ./main.o
 
 /* inclusion des fichiers d'en-tete freeglut */
-
 #ifdef __APPLE__
 #include <GLUT/glut.h> /* Pour Mac OS X */
 #else
 #include <GL/glut.h>   /* Pour les autres systemes */
 #endif 
 #include <cstdlib>
-#include <math.h>
 #include "carapace.cpp"
 #include "nageoire.cpp"
 #include "tete.cpp"
@@ -23,6 +21,9 @@
 char presse;
 int anglex,angley,x,y,xold,yold;
 double zoom=5;
+float valueAnimationNageoire=0;
+int animNageoire=0;
+float valueAnimationBouche=20;
 
 /* Prototype des fonctions */
 void affichage();
@@ -67,25 +68,45 @@ void affichage()
   /* effacement de l'image avec la couleur de fond */
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glShadeModel(GL_SMOOTH);
-  
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glRotatef(angley,1.0,0.0,0.0);
   glRotatef(anglex,0.0,1.0,0.0);
   glRotatef(180,0,0,1);
   glOrtho(zoom,-zoom,zoom,-zoom,zoom,-zoom);
+  glutPostRedisplay();
+
+
+  if(valueAnimationNageoire==30)
+    animNageoire=1;
   
+  if(valueAnimationNageoire==-15)
+    animNageoire=0; 
+
+  if(animNageoire==1)
+    valueAnimationNageoire=valueAnimationNageoire-0.5;
+  else
+    valueAnimationNageoire=valueAnimationNageoire+0.5;
+  
+  if(valueAnimationBouche>30)
+    valueAnimationBouche=30;
+  if(valueAnimationBouche<0)
+    valueAnimationBouche=0;
+
   glPushMatrix();
     glRotated(180-45,0,1,0);
     drawCarapace();
 
     glPushMatrix();
+      glRotated(-valueAnimationNageoire,0,1,0);
       glTranslated(-1.65,-0.5,1.2);
       glScaled(0.4,0.4,0.4); 
       drawNageoireAvGauche(); 
     glPopMatrix();
 
     glPushMatrix();
+      glRotated(valueAnimationNageoire,0,1,0);
       glTranslated(1.65,-0.5,1.2);
       glScaled(0.4,0.4,0.4); 
       drawNageoireAvDroite(); 
@@ -93,26 +114,29 @@ void affichage()
 
 
     glPushMatrix();
+      glRotated(-15-valueAnimationNageoire/3,0,1,0);
       glTranslated(-1.35,-1,-1.5);
       glScaled(0.3,0.3,0.3);
       drawNageoireArGauche();
     glPopMatrix();
 
     glPushMatrix();
+      glRotated(15+valueAnimationNageoire/3,0,1,0);
       glTranslated(1.35,-1,-1.5);
       glScaled(0.3,0.3,0.3);
       drawNageoireArDroite();
     glPopMatrix();
-
+  
     glPushMatrix();
-      drawTete();
+      glTranslated(0,1.2,3.5);
+      drawTete(valueAnimationBouche);
     glPopMatrix();
   glPopMatrix();    
 
 
   //Repère
   //axe x en rouge
-  glBegin(GL_LINES);
+  /*glBegin(GL_LINES);
     glColor3f(1.0,0.0,0.0);
     glVertex3f(0, 0,0.0);
     glVertex3f(1, 0,0.0);
@@ -129,7 +153,7 @@ void affichage()
     glVertex3f(0, 0,0.0);
     glVertex3f(0, 0,1.0);
   glEnd();
-
+*/
   glFlush();
   
   //On echange les buffers 
@@ -140,7 +164,7 @@ void clavier(unsigned char touche,int x,int y)
 {
   switch (touche)
     {
-    case 'p': /* affichage du carre plein */
+    case 'a': /* affichage du carre plein */
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       glutPostRedisplay();
       break;
@@ -153,14 +177,12 @@ void clavier(unsigned char touche,int x,int y)
       glutPostRedisplay();
       break;
     case 'd':
-      glEnable(GL_DEPTH_TEST);
-      glutPostRedisplay();
+      valueAnimationBouche++;
       break;
     case 'D':
-      glDisable(GL_DEPTH_TEST);
-      glutPostRedisplay();
+      valueAnimationBouche--;
       break;
-    case 'a'://Les faces à l'envers s'affichent en fil de fer
+    case 'p'://Les faces à l'envers s'affichent en fil de fer
       glPolygonMode(GL_FRONT,GL_FILL);
       glPolygonMode(GL_FRONT,GL_LINE);
       glutPostRedisplay();
@@ -201,7 +223,7 @@ void mouse(int button, int state,int x,int y)
 }
 
 void mousemotion(int x,int y)
-  {
+{
     if (presse) /* si le bouton gauche est presse */
     {
       /* on modifie les angles de rotation de l'objet
@@ -214,4 +236,5 @@ void mousemotion(int x,int y)
     
     xold=x; /* sauvegarde des valeurs courante de le position de la souris */
     yold=y;
-  }
+}
+

@@ -8,29 +8,20 @@
 //gcc main.cpp -lglut -lGL -lm -o main.o && ./main.o
 
 /* inclusion des fichiers d'en-tete freeglut */
-
 #ifdef __APPLE__
 #include <GLUT/freeglut.h> /* Pour Mac OS X */
 #else
 #include <GL/freeglut.h>   /* Pour les autres systemes */
 #endif 
 #include <cstdlib>
-#include <math.h>
-
-/*class Point*/
-class Point{
-    public :
-	//coordonnées x, y et z du point
-	double x;
-	double y;
-	double z;
-};
+#ifndef PRIMITIVE_H
+#include "primitive.cpp"
+#endif
 
 float rayon=2;
 
 /* Prototype des fonctions */
 void drawCarapace();
-void drawMaDemiSphere(float r, int NM, int NP);
 void drawCouronne();
 void drawCou();
 
@@ -59,33 +50,6 @@ void drawCarapace()
 
 	drawCou();
 
-}
-
-void drawMaDemiSphere(float r, int NM, int NP)
-{
-  int i,j;
-  GLfloat fSphere[NM*NP][3];
-
-  for (i=0;i<NP;i++)
-  {
-    for (j=0;j<NM;j++)
-    {
-		fSphere[i*NM+j][0]=r*cos(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
-		fSphere[i*NM+j][1]=r*sin(i*M_PI/(2*NP));
-		fSphere[i*NM+j][2]=r*sin(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
-    }
-  }
-
-	glBegin(GL_POLYGON);
-		for (i=0; i<NP-1; ++i) {
-			for (j=0; j<NM; ++j) {
-				glVertex3fv(fSphere[i*NM+j]);
-				glVertex3fv(fSphere[i*NM+(j+1)%NM]);
-				glVertex3fv(fSphere[(i+1)*NM+(j+1)%NM]);
-				glVertex3fv(fSphere[(i+1)*NM+j]);
-			}
-		}
-	glEnd();
 }
 
 void drawCouronne()

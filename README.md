@@ -3,12 +3,11 @@
  
 # Modelisation de la tortue
 - [x] Corps
-- [] Nageoires de devant
-- [] Nageoires de derrière
-- [] Oeil
-- [] Tête 
-    - [] Yeux
-    - [] Bouche
+- [x] Nageoires de devant
+- [x] Nageoires de derrière
+- [x] Tête 
+    - [x] Yeux
+    - [x] Oeil
 
 # Modelisation d'une primitive
 - [x] Demi-Sphère 
@@ -26,5 +25,5 @@
 - [] Utiliser les flèches du clavier pour déplacer la caméra.
 
 # Gérer 2 animations
-- [] Une animation automatique (la tortue nage).
-- [] Une animation avec les touches du clavier.
+- [x] Une animation automatique (la tortue nage).
+- [x] Une animation avec les touches du clavier.
