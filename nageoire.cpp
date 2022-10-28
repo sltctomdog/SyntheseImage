@@ -5,7 +5,7 @@
 /****************************************************************************************/
 
 //Compilation et execution
-//gcc main.cpp -lglut -lGL -lm -o main.o && ./main.o
+//gcc main.cpp -lglut -lGL -lm -ljpeg -o main.o && ./main.o
 
 /* inclusion des fichiers d'en-tete freeglut */
 

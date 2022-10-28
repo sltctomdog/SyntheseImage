@@ -5,15 +5,23 @@
 /****************************************************************************************/
 
 //Compilation et execution
-//gcc main.cpp -lglut -lGL -lm -o main.o && ./main.o
+//gcc main.cpp -lglut -lGL -lm -ljpeg -o main.o && ./main.o
 
 /* inclusion des fichiers d'en-tete freeglut */
 #ifdef __APPLE__
 #include <GLUT/glut.h> /* Pour Mac OS X */
 #else
 #include <GL/glut.h>   /* Pour les autres systemes */
-#endif 
+#endif
 #include <cstdlib>
+#include <cstdio>
+#include <jpeglib.h>
+#include <jerror.h>
+
+#ifdef __WIN32
+#pragma comment (lib, "jpeg.lib")
+#endif
+
 #include "carapace.cpp"
 #include "nageoire.cpp"
 #include "tete.cpp"
@@ -21,21 +29,24 @@
 char presse;
 int anglex,angley,x,y,xold,yold;
 double zoom=5;
-double vitesseCamera = 4;
 float valueAnimationNageoire=0;
 int animNageoire=0;
 float valueAnimationBouche=20;
+unsigned char image[256*256*3];
 
 /* Prototype des fonctions */
 void affichage();
 void clavier(unsigned char touche,int x,int y);
+void specialKey(int key, int x, int y);
 void reshape(int x,int y);
 void idle();
 void mouse(int bouton,int etat,int x,int y);
 void mousemotion(int x,int y);
+void loadJpegImage(char *fichier);
 
 int main(int argc,char **argv)
 {
+  loadJpegImage("./shell.jpg");
   /* initialisation de glut et creation
      de la fenetre */
   glutInit(&argc,argv);
@@ -50,12 +61,20 @@ int main(int argc,char **argv)
   glPointSize(2.0);
   glEnable(GL_DEPTH_TEST);
 
+  /* Parametrage du placage de textures */
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,256,256,0,
+	       GL_RGB,GL_UNSIGNED_BYTE,image);
+  //glEnable(GL_TEXTURE_2D);
+
   /* enregistrement des fonctions de rappel */
   glutDisplayFunc(affichage);
   glutKeyboardFunc(clavier);
   glutReshapeFunc(reshape);
   glutMouseFunc(mouse);
   glutMotionFunc(mousemotion);
+  glutSpecialFunc(specialKey);
 
   /* Entree dans la boucle principale glut */
   glutMainLoop();
@@ -177,45 +196,51 @@ void clavier(unsigned char touche,int x,int y)
       glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
       glutPostRedisplay();
       break;
-    case 'd':
+    case 'd': /* Animation de la bouche */
       valueAnimationBouche++;
       break;
     case 'D':
       valueAnimationBouche--;
       break;
-    case 'p'://Les faces à l'envers s'affichent en fil de fer
+    case 'p': //Les faces à l'envers s'affichent en fil de fer
       glPolygonMode(GL_FRONT,GL_FILL);
       glPolygonMode(GL_FRONT,GL_LINE);
       glutPostRedisplay();
     break;
-    case 'z':
+    case 'z': /* Zoom */
       zoom*=1.1;
       glutPostRedisplay();
       break;
-    case 'Z':
+    case 'Z': /* Zoom */
       zoom/=1.1;
       glutPostRedisplay();
       break;
-     case 'l':
-        angley+= vitesseCamera;
-        glutPostRedisplay(); /* on demande un rafraichissement de l'affichage */
-        break;
-    case 'm':
-        anglex += vitesseCamera;
-        glutPostRedisplay();
-       break;
-    case 'k':
-        anglex -= vitesseCamera ;
-        glutPostRedisplay();
-        break;
-    case 'o':
-        angley -= vitesseCamera;
-        glutPostRedisplay();
-        break;
     case 'q' : /*la touche 'q' permet de quitter le programme */
       exit(0);
     }
 }
+
+void specialKey(int key, int x, int y)
+{
+    switch(key){
+      case GLUT_KEY_RIGHT: /* La fleche de droite tourne la caméra à droite */
+        anglex += 2;
+        glutPostRedisplay();
+      break;
+      case GLUT_KEY_LEFT: /* La fleche de gauche tourne la caméra à gauche */
+        anglex -= 2;
+        glutPostRedisplay();
+      break;
+      case GLUT_KEY_UP: /* La fleche du haut tourne la caméra en haut */
+        angley += 2;
+        glutPostRedisplay();
+      break;
+      case GLUT_KEY_DOWN: /* La fleche du bas tourne la caméra en bas */
+        angley -= 2;
+        glutPostRedisplay();
+      break;
+    }
+  }
 
 void reshape(int x,int y)
 {
@@ -255,3 +280,47 @@ void mousemotion(int x,int y)
     yold=y;
 }
 
+void loadJpegImage(char *fichier)
+{
+  struct jpeg_decompress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  FILE *file;	
+  unsigned char *ligne;
+
+  cinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_decompress(&cinfo);
+#ifdef __WIN32
+  if (fopen_s(&file,fichier,"rb") != 0)
+    {
+      fprintf(stderr,"Erreur : impossible d'ouvrir le fichier texture.jpg\n");
+      exit(1);
+    }
+#elif __GNUC__
+  if ((file = fopen(fichier,"rb")) == 0)
+    {
+      fprintf(stderr,"Erreur : impossible d'ouvrir le fichier texture.jpg\n");
+      exit(1);
+    }	
+#endif
+  jpeg_stdio_src(&cinfo, file);
+  jpeg_read_header(&cinfo, TRUE);
+
+  if ((cinfo.image_width!=256)||(cinfo.image_height!=256)) {
+    fprintf(stdout,"Erreur : l'image doit etre de taille 256x256\n");
+    exit(1);
+  }
+  if (cinfo.jpeg_color_space==JCS_GRAYSCALE) {
+    fprintf(stdout,"Erreur : l'image doit etre de type RGB\n");
+    exit(1);
+  }
+
+  jpeg_start_decompress(&cinfo);
+  ligne=image;
+  while (cinfo.output_scanline<cinfo.output_height)
+    {
+      ligne=image+3*256*cinfo.output_scanline;
+      jpeg_read_scanlines(&cinfo,&ligne,1);
+    }
+  jpeg_finish_decompress(&cinfo);
+  jpeg_destroy_decompress(&cinfo);
+}

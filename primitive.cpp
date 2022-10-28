@@ -5,7 +5,7 @@
 /****************************************************************************************/
 
 //Compilation et execution
-//gcc main.cpp -lglut -lGL -lm -o main.o && ./main.o
+//gcc main.cpp -lglut -lGL -lm -ljpeg -o main.o && ./main.o
 
 /* inclusion des fichiers d'en-tete freeglut */
 
@@ -31,6 +31,7 @@ class Point{
 
 /* Prototype des fonctions */
 void drawMaDemiSphere(float r, int NM, int NP);
+void draw_cube(float x, float y, float z);
 
 /* Fonctions */
 void drawMaDemiSphere(float r, int NM, int NP)
@@ -58,4 +59,50 @@ void drawMaDemiSphere(float r, int NM, int NP)
 			}
 		}
 	glEnd();
+}
+
+void draw_cube(float x, float y, float z)
+{
+  glBegin(GL_POLYGON);
+    glTexCoord2f(0,0.0);glVertex3f((x/2.), -1*(y/2.), (z/2.));
+    glTexCoord2f(0.2,0.0);glVertex3f((x/2.), -1*(y/2.), -1*(z/2.));
+    glTexCoord2f(0.2,4);glVertex3f(-1*(x/2.), -1*(y/2.), -1*(z/2.));
+    glTexCoord2f(0,4);glVertex3f(-1*(x/2.), -1*(y/2.), (z/2.));
+  glEnd();
+  glBegin(GL_POLYGON);
+    glTexCoord2f(0,0.0);glVertex3f((x/2.), -1*(y/2.), -1*(z/2.));
+    glTexCoord2f(0.2,0.0);glVertex3f((x/2.), -1*(y/2.), (z/2.));
+    glTexCoord2f(0.2,1);glVertex3f((x/2.), y/2., (z/2.));
+    glTexCoord2f(0,1);glVertex3f((x/2.), y/2., -1*(z/2.));
+  glEnd();
+  glBegin(GL_POLYGON);
+    glTexCoord2f(0,0.0);glVertex3f((x/2.), -1*(y/2.), -1*(z/2.));
+    glTexCoord2f(0.2,0.0);glVertex3f((x/2.), -1*(y/2.), (z/2.));
+    glTexCoord2f(0.2,1);glVertex3f((x/2.), y/2., (z/2.));
+    glTexCoord2f(0,1);glVertex3f((x/2.), y/2., -1*(z/2.));
+  glEnd();
+  glBegin(GL_POLYGON);
+    glTexCoord2f(0,0.0);glVertex3f((x/2.), -1*(y/2.), (z/2.));
+    glTexCoord2f(0.2,0.0);glVertex3f(-1*(x/2.), -1*(y/2.), (z/2.));
+    glTexCoord2f(0.2,1);glVertex3f(-1*(x/2.), y/2., (z/2.));
+    glTexCoord2f(0,1);glVertex3f((x/2.), y/2., (z/2.));
+  glEnd();
+  glBegin(GL_POLYGON);
+    glTexCoord2f(0,0.0);glVertex3f(-1*(x/2.), -1*(y/2.), -1*(z/2.));
+    glTexCoord2f(0.2,0.0);glVertex3f((x/2.), -1*(y/2.), -1*(z/2.));
+    glTexCoord2f(0.2,1);glVertex3f((x/2.), y/2., -1*(z/2.));
+    glTexCoord2f(0,1);glVertex3f(-1*(x/2.), y/2., -1*(z/2.));
+  glEnd();
+  glBegin(GL_POLYGON);
+    glTexCoord2f(0,0.0);glVertex3f(-1*(x/2.), -1*(y/2.), (z/2.));
+    glTexCoord2f(0.2,0.0);glVertex3f(-1*(x/2.), -1*(y/2.), -1*(z/2.));
+    glTexCoord2f(0.2,1);glVertex3f(-1*(x/2.), y/2., -1*(z/2.));
+    glTexCoord2f(0,1);glVertex3f(-1*(x/2.), y/2., (z/2.));
+  glEnd();
+  glBegin(GL_POLYGON);
+    glTexCoord2f(0,0.0);glVertex3f((x/2.), (y/2.), (z/2.));
+    glTexCoord2f(0.2,0.0);glVertex3f((x/2.), (y/2.), -1*(z/2.));
+    glTexCoord2f(0.2,4);glVertex3f(-1*(x/2.), (y/2.), -1*(z/2.));
+    glTexCoord2f(0,4);glVertex3f(-1*(x/2.), (y/2.), (z/2.));
+  glEnd();
 }

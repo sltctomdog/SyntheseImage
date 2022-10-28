@@ -5,7 +5,7 @@
 /****************************************************************************************/
 
 //Compilation et execution
-//gcc main.cpp -lglut -lGL -lm -o main.o && ./main.o
+//gcc main.cpp -lglut -lGL -lm -ljpeg -o main.o && ./main.o
 
 /* inclusion des fichiers d'en-tete freeglut */
 #ifdef __APPLE__
@@ -44,8 +44,11 @@ void drawCarapace()
 			glScaled(0.8,0.5,1);
 			drawMaDemiSphere(rayon,40,6);
 		glPopMatrix();
-
+		
+		glEnable(GL_TEXTURE_2D);
 		drawCouronne();
+		glDisable(GL_TEXTURE_2D);
+
 	glPopMatrix();
 
 	drawCou();
@@ -55,7 +58,8 @@ void drawCarapace()
 void drawCouronne()
 {
 	float angle=0;
-	glColor3f(64./255,64./255,34./255);
+	glColor3f(139.0/255,69.0/255,19.0/255);
+	
 	glPushMatrix();
 		glScaled(0.8,0.5,1);
 		while(angle<360)
@@ -66,9 +70,9 @@ void drawCouronne()
 				glRotated(-10,1,0,0);
 				glScaled(1,1,0.2);
 				glScaled(0.2,0.3,0.2);
-				glutSolidCube(1);
+				draw_cube(1,1,1);
 				glRotated(90,1,0,0);
-				glutSolidCube(1);
+				draw_cube(1,1,1);
 			glPopMatrix();
 
 			glPushMatrix();
@@ -79,9 +83,9 @@ void drawCouronne()
 				glRotated(-10,1,0,0);
 				glScaled(1,1,0.2);
 				glScaled(0.2,0.2,0.2);
-				glutSolidCube(1);
+				draw_cube(1,1,1);
 				glRotated(90,1,0,0);
-				glutSolidCube(1);
+				draw_cube(1,1,1);
 			glPopMatrix();
 
 			angle+=5;
