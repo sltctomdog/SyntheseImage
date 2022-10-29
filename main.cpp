@@ -33,6 +33,7 @@ float valueAnimationNageoire=0;
 int animNageoire=0;
 float valueAnimationBouche=20;
 unsigned char image[256*256*3];
+bool lumspot=false;
 
 /* Prototype des fonctions */
 void affichage();
@@ -66,7 +67,6 @@ int main(int argc,char **argv)
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
   glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,256,256,0,
 	       GL_RGB,GL_UNSIGNED_BYTE,image);
-  //glEnable(GL_TEXTURE_2D);
 
   /* enregistrement des fonctions de rappel */
   glutDisplayFunc(affichage);
@@ -90,14 +90,15 @@ void affichage()
   glShadeModel(GL_SMOOTH);
 
   glMatrixMode(GL_MODELVIEW);
+  //On active la couleur des matériaux pour utiliser la lumière
+  glEnable(GL_COLOR_MATERIAL);
   glLoadIdentity();
+  glRotatef(180,0,0,1);
   glRotatef(angley,1.0,0.0,0.0);
   glRotatef(anglex,0.0,1.0,0.0);
-  glRotatef(180,0,0,1);
   glOrtho(zoom,-zoom,zoom,-zoom,zoom,-zoom);
   glutPostRedisplay();
-
-
+  
   if(valueAnimationNageoire==30)
     animNageoire=1;
   
@@ -116,6 +117,43 @@ void affichage()
 
   glPushMatrix();
     glRotated(180-45,0,1,0);
+
+    //Gestion des lumieres
+    GLfloat position_source0[]= {0.0, 1.0, 0.0, 1.0 };
+    GLfloat position_source1[] = { 0.0, 1.0, 3.0, 1.0 };
+    GLfloat direction_source1[] = { 0.0, 0.0, 10.0 };
+
+    GLfloat ambient[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat diffuse[] = { 0.05, 0.05, 0.05, 1.0 };
+    GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+    glLightfv(GL_LIGHT0,GL_POSITION,position_source0);
+    glLightfv(GL_LIGHT0,GL_AMBIENT,ambient);
+    glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuse);
+    glLightfv(GL_LIGHT0,GL_SPECULAR,specular);
+
+
+    glLightfv(GL_LIGHT1, GL_POSITION, position_source1);
+    glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, direction_source1);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, specular);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
+    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+
+    glEnable(GL_LIGHTING);
+
+    if(lumspot==true)
+    {
+      glEnable(GL_LIGHT1);
+      glDisable(GL_LIGHT0);
+    }
+    else
+    {
+      glEnable(GL_LIGHT0);
+      glDisable(GL_LIGHT1);
+    }
+
     drawCarapace();
 
     glPushMatrix();
@@ -152,11 +190,11 @@ void affichage()
       drawTete(valueAnimationBouche);
     glPopMatrix();
   glPopMatrix();    
-
+  /*
 
   //Repère
   //axe x en rouge
-  /*glBegin(GL_LINES);
+  glBegin(GL_LINES);
     glColor3f(1.0,0.0,0.0);
     glVertex3f(0, 0,0.0);
     glVertex3f(1, 0,0.0);
@@ -172,8 +210,8 @@ void affichage()
     glColor3f(0.0,0.0,1.0);
     glVertex3f(0, 0,0.0);
     glVertex3f(0, 0,1.0);
-  glEnd();
-*/
+  glEnd();*/
+
   glFlush();
   
   //On echange les buffers 
@@ -201,6 +239,12 @@ void clavier(unsigned char touche,int x,int y)
       break;
     case 'D':
       valueAnimationBouche--;
+      break;
+    case 'e': /* Lumiere spot */
+      lumspot=1;
+      break;
+    case 'E': /* Lumiere spot */
+      lumspot=0;
       break;
     case 'p': //Les faces à l'envers s'affichent en fil de fer
       glPolygonMode(GL_FRONT,GL_FILL);

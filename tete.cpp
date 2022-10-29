@@ -29,7 +29,6 @@ void drawTete(float animBouche)
     glColor3f(79./255,97./255,55./255);
         drawMaDemiSphere(1.2,20,20);
     glPushMatrix();
-    glColor3f(60./255,80./255,40./255);
         glRotated(-180+animBouche,1,0,0);
         glScaled(1,0.6,1);
         drawMaDemiSphere(1.2,20,20);

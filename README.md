@@ -17,6 +17,8 @@
 - [x] Texture plaqué sur une face.
 
 # Gérer 2 types de lumières
+- [x] Lumière classique
+- [x] Lumière type spot
 
 # Gérer le zoom
 - [x] Utiliser les touches z et Z pour zoomer sur la tortue.
