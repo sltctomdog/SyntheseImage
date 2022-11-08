@@ -105,5 +105,4 @@ void drawNageoireArDroite()
             glutSolidSphere(1,10,10);
         glPopMatrix();
     glPopMatrix();
-
 }

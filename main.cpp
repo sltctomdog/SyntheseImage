@@ -98,7 +98,7 @@ void affichage()
   glRotatef(anglex,0.0,1.0,0.0);
   glOrtho(zoom,-zoom,zoom,-zoom,zoom,-zoom);
   glutPostRedisplay();
-  
+
   if(valueAnimationNageoire==30)
     animNageoire=1;
   
@@ -110,6 +110,7 @@ void affichage()
   else
     valueAnimationNageoire=valueAnimationNageoire+0.5;
   
+  /* On met une limite d'angle pour pas trop lui faire ouvrir/fermer la bouche */
   if(valueAnimationBouche>30)
     valueAnimationBouche=30;
   if(valueAnimationBouche<0)
@@ -139,10 +140,11 @@ void affichage()
     glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, specular);
     glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
-    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 5.0);
 
     glEnable(GL_LIGHTING);
 
+    /* Animation de lumière grâce aux touches "e" et "E"*/
     if(lumspot==true)
     {
       glEnable(GL_LIGHT1);
@@ -154,8 +156,10 @@ void affichage()
       glDisable(GL_LIGHT1);
     }
 
+    /* CARAPACE */
     drawCarapace();
 
+    /* NAGEOIRES */
     glPushMatrix();
       glRotated(-valueAnimationNageoire,0,1,0);
       glTranslated(-1.65,-0.5,1.2);
@@ -185,33 +189,13 @@ void affichage()
       drawNageoireArDroite();
     glPopMatrix();
   
+    /* TÊTE */
     glPushMatrix();
       glTranslated(0,1.2,3.5);
       drawTete(valueAnimationBouche);
     glPopMatrix();
   glPopMatrix();    
-  /*
-
-  //Repère
-  //axe x en rouge
-  glBegin(GL_LINES);
-    glColor3f(1.0,0.0,0.0);
-    glVertex3f(0, 0,0.0);
-    glVertex3f(1, 0,0.0);
-  glEnd();
-  //axe des y en vert
-  glBegin(GL_LINES);
-    glColor3f(0.0,1.0,0.0);
-    glVertex3f(0, 0,0.0);
-    glVertex3f(0, 1,0.0);
-  glEnd();
-  //axe des z en bleu
-  glBegin(GL_LINES);
-    glColor3f(0.0,0.0,1.0);
-    glVertex3f(0, 0,0.0);
-    glVertex3f(0, 0,1.0);
-  glEnd();*/
-
+  
   glFlush();
   
   //On echange les buffers 
@@ -222,7 +206,7 @@ void clavier(unsigned char touche,int x,int y)
 {
   switch (touche)
     {
-    case 'a': /* affichage du carre plein */
+    case 'a': /* affichage de la tortue pleine */
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       glutPostRedisplay();
       break;
@@ -246,11 +230,6 @@ void clavier(unsigned char touche,int x,int y)
     case 'E': /* Lumiere spot */
       lumspot=0;
       break;
-    case 'p': //Les faces à l'envers s'affichent en fil de fer
-      glPolygonMode(GL_FRONT,GL_FILL);
-      glPolygonMode(GL_FRONT,GL_LINE);
-      glutPostRedisplay();
-    break;
     case 'z': /* Zoom */
       zoom*=1.1;
       glutPostRedisplay();
@@ -324,6 +303,7 @@ void mousemotion(int x,int y)
     yold=y;
 }
 
+/* Fonction qui permet de charger une image pour utiliser les textures */
 void loadJpegImage(char *fichier)
 {
   struct jpeg_decompress_struct cinfo;

@@ -43,7 +43,6 @@ void drawTete(float animBouche)
         glScaled(0.4,0.4,0.4);
         drawOeil();
     glPopMatrix();
-
 }
 
 void drawOeil()

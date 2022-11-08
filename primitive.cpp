@@ -20,7 +20,7 @@
 #define PRIMITIVE_H
 #endif
 
-/*class Point*/
+/*class Point utilisé pour le cube*/
 class Point{
     public :
 	//coordonnées x, y et z du point
@@ -37,30 +37,32 @@ void draw_cube(float x, float y, float z);
 void drawMaDemiSphere(float r, int NM, int NP)
 {
   int i,j;
-  GLfloat fSphere[NM*NP][3];
+  GLfloat pSphere[NM*NP][3];
 
+  /* Remplissage des coordonnees */
   for (i=0;i<NP;i++)
   {
     for (j=0;j<NM;j++)
     {
-		fSphere[i*NM+j][0]=r*cos(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
-		fSphere[i*NM+j][1]=r*sin(i*M_PI/(2*NP));
-		fSphere[i*NM+j][2]=r*sin(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
+      pSphere[i*NM+j][0]=r*cos(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
+      pSphere[i*NM+j][1]=r*sin(i*M_PI/(2*NP));
+      pSphere[i*NM+j][2]=r*sin(j*2*M_PI/NM)*cos(i*M_PI/(2*NP));
     }
   }
-
+  /* Création des vertex en utilisant les indice de points */
 	glBegin(GL_POLYGON);
 		for (i=0; i<NP-1; ++i) {
 			for (j=0; j<NM; ++j) {
-				glVertex3fv(fSphere[i*NM+j]);
-				glVertex3fv(fSphere[i*NM+(j+1)%NM]);
-				glVertex3fv(fSphere[(i+1)*NM+(j+1)%NM]);
-				glVertex3fv(fSphere[(i+1)*NM+j]);
+				glVertex3fv(pSphere[i*NM+j]);
+				glVertex3fv(pSphere[i*NM+(j+1)%NM]);
+				glVertex3fv(pSphere[(i+1)*NM+(j+1)%NM]);
+				glVertex3fv(pSphere[(i+1)*NM+j]);
 			}
 		}
 	glEnd();
 }
 
+/* Création d'un cube sur mesure face par face pour appliquer des textures */
 void draw_cube(float x, float y, float z)
 {
   glBegin(GL_POLYGON);

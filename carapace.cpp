@@ -45,6 +45,7 @@ void drawCarapace()
 			drawMaDemiSphere(rayon,40,6);
 		glPopMatrix();
 		
+		/* On active les textures pour la couronne */
 		glEnable(GL_TEXTURE_2D);
 		drawCouronne();
 		glDisable(GL_TEXTURE_2D);
@@ -52,7 +53,6 @@ void drawCarapace()
 	glPopMatrix();
 
 	drawCou();
-
 }
 
 void drawCouronne()
@@ -62,6 +62,7 @@ void drawCouronne()
 	
 	glPushMatrix();
 		glScaled(0.8,0.5,1);
+		/* On fait deux rangé de cube pour couvrir aussi dessous la carapace et pas seulement que sur le coté */
 		while(angle<360)
 		{  
 			glPushMatrix();
