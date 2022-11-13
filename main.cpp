@@ -247,11 +247,11 @@ void specialKey(int key, int x, int y)
 {
     switch(key){
       case GLUT_KEY_RIGHT: /* La fleche de droite tourne la caméra à droite */
-        anglex += 2;
+        anglex -= 2;
         glutPostRedisplay();
       break;
       case GLUT_KEY_LEFT: /* La fleche de gauche tourne la caméra à gauche */
-        anglex -= 2;
+        anglex += 2;
         glutPostRedisplay();
       break;
       case GLUT_KEY_UP: /* La fleche du haut tourne la caméra en haut */
